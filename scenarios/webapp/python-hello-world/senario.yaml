@@ -3,6 +3,7 @@ name: Python Hello World on Azure Web App
 description: A simple "Hello, World" web application using Flask, deployed to Azure Web App (App Service).
 language: python
 paas: webapp
+os: linux
 main_feature: hello-world
 integrations: []
 tags: [flask, beginner, hello-world]

@@ -1,1 +1,1 @@
-# azure-appservice-scenarios
+# azure-paas-scenarios

@@ -2,21 +2,23 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "suffix" {
-  length  = 6
-  upper   = false
-  special = false
+locals {
+  timestamp   = formatdate("YYYYMMDDhhmmss", timestamp())
+  name_suffix = "${var.prefix}-${local.timestamp}"
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
+  name     = "rg-${local.name_suffix}"
   location = var.location
 }
 
 resource "azurerm_app_service_plan" "asp" {
-  name                = var.app_service_plan_name
+  name                = "asp-${local.name_suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+
+  kind     = "Linux"
+  reserved = true
 
   sku {
     tier = var.app_sku_tier
@@ -25,7 +27,7 @@ resource "azurerm_app_service_plan" "asp" {
 }
 
 resource "azurerm_app_service" "app" {
-  name                = "${var.app_name}-${random_string.suffix.result}"
+  name                = "app-${local.name_suffix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.asp.id
@@ -38,4 +40,3 @@ resource "azurerm_app_service" "app" {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }
 }
-s
